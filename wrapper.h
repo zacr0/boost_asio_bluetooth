@@ -115,7 +115,7 @@ public:
 
 	// Returns the strand object.
 #if BOOST_ASIO_VERSION >= 101200 // Boost 1.66+
-    boost::asio::io_strand &GetStrand();
+    boost::asio::io_context::strand &GetStrand();
 #else
 	boost::asio::strand &GetStrand();
 #endif
@@ -220,7 +220,7 @@ public:
 
 	// Returns the strand object.
 #if BOOST_ASIO_VERSION >= 101200 // Boost 1.66+
-    boost::asio::io_strand &GetStrand();
+    boost::asio::io_context::strand &GetStrand();
 #else
     boost::asio::strand &GetStrand();
 #endif
