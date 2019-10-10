@@ -29,7 +29,7 @@ find_library(bluetooth_LIBS NAMES bluetooth PATHS /usr/lib/ /usr/lib/x86_64-linu
 IF(NOT bluetooth_LIBS)
     message(FATAL_ERROR "Could not find bluetooth library. Please install libbluetooth-dev library.")
 ENDIF()
-SET(REQUIRED_LIBRARIES ${Boost_LIBRARIES} ${bluetooth_LIBS} pthread bluetooth)
+SET(REQUIRED_LIBRARIES ${Boost_LIBRARIES} ${bluetooth_LIBS} pthread)
 
 
 MESSAGE(STATUS "REQUIRED_LIBRARIES=${REQUIRED_LIBRARIES}")
