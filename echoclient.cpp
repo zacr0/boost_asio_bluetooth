@@ -86,7 +86,7 @@ private:
 
     void OnError(const boost::system::error_code &error) {
         global_stream_lock.lock();
-        std::cout << "[OnError] " << error << "\n";
+        std::cout << "[OnError] " << error.message() << "\n";
         global_stream_lock.unlock();
     }
 
