@@ -100,17 +100,24 @@ public:
 };
 
 int main(int argc, char **argv) {
+    // Parse input parameters
+    if (argc < 2) {
+        throw std::runtime_error("Missing parameter mac_addr");
+    }
+    std::string mac_addr = argv[1];
+    uint8_t channel = 1;
+    if (argc == 3) channel = atoi(argv[2]);
+
     boost::shared_ptr<Hive> hive(new Hive());
 
     boost::shared_ptr<MyConnection> connection(new MyConnection(hive));
     // specify the mac address here
-    connection->Connect("94:39:E5:8E:5A:A2", 13);
+    connection->Connect(mac_addr, channel);
 
     while(1) {
         hive->Poll();
         boost::this_thread::sleep( boost::posix_time::seconds(1) );
     }
-
     hive->Stop();
 
     return 0;

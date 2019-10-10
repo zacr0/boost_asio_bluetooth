@@ -125,12 +125,15 @@ public:
     }
 };
 
-int main(void) {
+int main(int argc, char **argv) {
+    uint8_t channel = 1;
+    if (argc == 2) channel = atoi(argv[1]);
+
     boost::shared_ptr<Hive> hive(new Hive());
 
     boost::shared_ptr<MyAcceptor> acceptor(new MyAcceptor(hive));
     // Listen on connection from anyone
-    acceptor->Listen(13);
+    acceptor->Listen(channel);
 
     boost::shared_ptr<MyConnection> connection(new MyConnection(hive));
     acceptor->Accept(connection);
@@ -139,7 +142,6 @@ int main(void) {
         hive->Poll();
         boost::this_thread::sleep( boost::posix_time::seconds(1) );
     }
-
     hive->Stop();
 
     return 0;
