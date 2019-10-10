@@ -15,21 +15,26 @@ IF(NOT CMAKE_BUILD_TYPE)
    MESSAGE(STATUS ${CMAKE_BUILD_TYPE})
 ENDIF()
 
-find_package(Boost)
+# Find boost
+find_package(Boost REQUIRED system thread)
 if (Boost_FOUND)
-	include_directories($(Boost_INCLUDE_DIR))
-	add_definitions("-DHAS_BOOST")
-else()
+    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+    LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+    add_definitions("-DHAS_BOOST")
+else(Boost_FOUND)
 	message(FATAL_ERROR "Boost not found")
 endif()
+# Find bluetooth
+find_library(bluetooth_LIBS NAMES bluetooth PATHS /usr/lib/ /usr/lib/x86_64-linux-gnu)
+IF(NOT bluetooth_LIBS)
+    message(FATAL_ERROR "Could not find bluetooth library. Please install libbluetooth-dev library.")
+ENDIF()
+SET(REQUIRED_LIBRARIES ${Boost_LIBRARIES} ${bluetooth_LIBS} pthread bluetooth)
 
-SET(REQUIRED_LIBRARIES boost_system boost_thread lpthread bluetooth)
 
-include_directories(.)
-LINK_LIBRARIES(${PROJECT_NAME} ${REQUIRED_LIBRARIES})
+MESSAGE(STATUS "REQUIRED_LIBRARIES=${REQUIRED_LIBRARIES}")
+add_executable(echo_server echoserver.cpp wrapper.cpp)
+target_link_libraries(echo_server ${REQUIRED_LIBRARIES})
 
-add_executable(echo_server echoserver.cpp)
-target_link_libraries(echo_server  ${REQUIRED_LIBRARIES})
-
-add_executable(echo_client echoclient.cpp)
-target_link_libraries(echo_client  ${REQUIRED_LIBRARIES})
+add_executable(echo_client echoclient.cpp wrapper.cpp )
+target_link_libraries(echo_client ${REQUIRED_LIBRARIES})
