@@ -25,122 +25,122 @@ int getch(void)
 
 class MyConnection : public Connection {
 private:
-  void OnAccept(const std::string &mac_addr, uint8_t channel) {
-    global_stream_lock.lock();
-    std::cout << "[OnAccept] " << mac_addr << ":" << channel << "\n";
-    global_stream_lock.unlock();
+    void OnAccept(const std::string &mac_addr, uint8_t channel) {
+        global_stream_lock.lock();
+        std::cout << "[OnAccept] " << mac_addr << ":" << channel << "\n";
+        global_stream_lock.unlock();
 
-    Recv();
-  }
-
-  void OnConnect(const std::string &mac_addr, uint8_t channel) {
-    global_stream_lock.lock();
-    std::cout << "[OnConnect] " << mac_addr << ":" << channel << "\n";
-    global_stream_lock.unlock();
-
-    Recv();
-  }
-
-  void OnSend(const std::vector<uint8_t> & buffer) {
-    global_stream_lock.lock();
-    std::cout << "[OnSend] " << buffer.size() << " bytes\n";
-    for(size_t x=0; x<buffer.size(); x++) {
-
-      std::cout << (char)buffer[x];
-      if((x + 1) % 16 == 0)
-        std::cout << std::endl;
+        Recv();
     }
-    std::cout << std::endl;
-    global_stream_lock.unlock();
-  }
 
-  void OnRecv(std::vector<uint8_t> &buffer) {
-    global_stream_lock.lock();
-    std::cout << "[OnRecv] " << buffer.size() << " bytes\n";
-    for(size_t x=0; x<buffer.size(); x++) {
+    void OnConnect(const std::string &mac_addr, uint8_t channel) {
+        global_stream_lock.lock();
+        std::cout << "[OnConnect] " << mac_addr << ":" << channel << "\n";
+        global_stream_lock.unlock();
 
-      std::cout << (char)buffer[x];
-      if((x + 1) % 16 == 0)
-        std::cout << std::endl;
+        Recv();
     }
-    std::cout << std::endl;
-    global_stream_lock.unlock();
 
-    // Start the next receive
-    Recv();
+    void OnSend(const std::vector<uint8_t> & buffer) {
+        global_stream_lock.lock();
+        std::cout << "[OnSend] " << buffer.size() << " bytes\n";
+        for(size_t x=0; x<buffer.size(); x++) {
 
-    // Echo the data back
-    Send(buffer);
-  }
+            std::cout << (char)buffer[x];
+            if((x + 1) % 16 == 0)
+                std::cout << std::endl;
+        }
+        std::cout << std::endl;
+        global_stream_lock.unlock();
+    }
 
-  void OnTimer(const boost::posix_time::time_duration &delta) {
-    global_stream_lock.lock();
-    std::cout << "[OnTimer] " << delta << "\n";
-    global_stream_lock.unlock();
-  }
+    void OnRecv(std::vector<uint8_t> &buffer) {
+        global_stream_lock.lock();
+        std::cout << "[OnRecv] " << buffer.size() << " bytes\n";
+        for(size_t x=0; x<buffer.size(); x++) {
 
-  void OnError(const boost::system::error_code &error) {
-    global_stream_lock.lock();
-    std::cout << "[OnError] " << error << "\n";
-    global_stream_lock.unlock();
-  }
+            std::cout << (char)buffer[x];
+            if((x + 1) % 16 == 0)
+                std::cout << std::endl;
+        }
+        std::cout << std::endl;
+        global_stream_lock.unlock();
+
+        // Start the next receive
+        Recv();
+
+        // Echo the data back
+        Send(buffer);
+    }
+
+    void OnTimer(const boost::posix_time::time_duration &delta) {
+        global_stream_lock.lock();
+        std::cout << "[OnTimer] " << delta << "\n";
+        global_stream_lock.unlock();
+    }
+
+    void OnError(const boost::system::error_code &error) {
+        global_stream_lock.lock();
+        std::cout << "[OnError] " << error << "\n";
+        global_stream_lock.unlock();
+    }
 
 public:
-  MyConnection(boost::shared_ptr<Hive> hive)
-    : Connection(hive) {
-  }
+    MyConnection(boost::shared_ptr<Hive> hive)
+        : Connection(hive) {
+    }
 
-  ~MyConnection() {
-  }
+    ~MyConnection() {
+    }
 };
 
 class MyAcceptor : public Acceptor {
 private:
-  bool OnAccept(boost::shared_ptr<Connection> connection, const std::string &addr, uint8_t channel) {
-    global_stream_lock.lock();
-    std::cout << "[OnAccept] " << addr << ":" << channel << "\n";
-    global_stream_lock.unlock();
+    bool OnAccept(boost::shared_ptr<Connection> connection, const std::string &addr, uint8_t channel) {
+        global_stream_lock.lock();
+        std::cout << "[OnAccept] " << addr << ":" << channel << "\n";
+        global_stream_lock.unlock();
 
-    return true;
-  }
+        return true;
+    }
 
-  void OnTimer(const boost::posix_time::time_duration &delta) {
-    global_stream_lock.lock();
-    std::cout << "[OnTimer] " << delta << "\n";
-    global_stream_lock.unlock();
-  }
+    void OnTimer(const boost::posix_time::time_duration &delta) {
+        global_stream_lock.lock();
+        std::cout << "[OnTimer] " << delta << "\n";
+        global_stream_lock.unlock();
+    }
 
-  void OnError(const boost::system::error_code &error) {
-    global_stream_lock.lock();
-    std::cout << "[OnError] " << error << "\n";
-    global_stream_lock.unlock();
-  }
+    void OnError(const boost::system::error_code &error) {
+        global_stream_lock.lock();
+        std::cout << "[OnError] " << error << "\n";
+        global_stream_lock.unlock();
+    }
 
 public:
-  MyAcceptor(boost::shared_ptr<Hive> hive)
-    : Acceptor(hive) {
-  }
+    MyAcceptor(boost::shared_ptr<Hive> hive)
+        : Acceptor(hive) {
+    }
 
-  ~MyAcceptor() {
-  }
+    ~MyAcceptor() {
+    }
 };
 
 int main(void) {
-  boost::shared_ptr<Hive> hive(new Hive());
+    boost::shared_ptr<Hive> hive(new Hive());
 
-  boost::shared_ptr<MyAcceptor> acceptor(new MyAcceptor(hive));
-  // Listen on connection from anyone
-  acceptor->Listen(13);
+    boost::shared_ptr<MyAcceptor> acceptor(new MyAcceptor(hive));
+    // Listen on connection from anyone
+    acceptor->Listen(13);
 
-  boost::shared_ptr<MyConnection> connection(new MyConnection(hive));
-  acceptor->Accept(connection);
+    boost::shared_ptr<MyConnection> connection(new MyConnection(hive));
+    acceptor->Accept(connection);
 
-  while(1) {
-    hive->Poll();
-    boost::this_thread::sleep( boost::posix_time::seconds(1) );
-  }
+    while(1) {
+        hive->Poll();
+        boost::this_thread::sleep( boost::posix_time::seconds(1) );
+    }
 
-  hive->Stop();
+    hive->Stop();
 
-  return 0;
+    return 0;
 }
